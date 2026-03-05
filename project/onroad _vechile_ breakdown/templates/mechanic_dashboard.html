@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard - Onroad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+                        url('https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?w=1920') center/cover no-repeat fixed;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .header-right span {
+            color: #00ff88;
+        }
+        
+        .header-right a {
+            color: #ff6b6b;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .header-right a:hover {
+            color: #ff4444;
+        }
+        
+        .container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .location-card {
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 40, 0.95));
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .location-card h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .location-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .location-input {
+            padding: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .location-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+        
+        .btn-location {
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+        }
+        
+        .btn-update {
+            background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%);
+            color: #1a1a2e;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        #map {
+            height: 350px;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            margin-top: 15px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 40, 0.95));
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .booking-item {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .booking-item:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.08));
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        
+        .booking-item h3 {
+            color: #00ff88;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .booking-item p {
+            color: #aaa;
+            margin: 6px 0;
+            font-size: 14px;
+        }
+        
+        .btn-accept {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #1a1a2e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 10px;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px 20px;
+            font-size: 16px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-accepted {
+            background: #00ff88;
+            color: #1a1a2e;
+        }
+        
+        .status-in_progress {
+            background: #ffa502;
+            color: #1a1a2e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🔧 Onroad - Mechanic Dashboard</div>
+        <div class="header-right">
+            <span>👨‍🔧 {{ mechanic.name }}</span> | <a href="/logout">Logout</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="location-card">
+            <h2>📍 Update Your Current Location</h2>
+            <div class="location-inputs">
+                <input type="number" step="any" id="lat" class="location-input" value="{{ mechanic.latitude or '' }}" placeholder="Latitude">
+                <input type="number" step="any" id="lng" class="location-input" value="{{ mechanic.longitude or '' }}" placeholder="Longitude">
+                <button class="btn btn-location" onclick="getLocation()">📍 Get Location</button>
+            </div>
+            <button class="btn btn-update" onclick="updateLocation()">Update My Location</button>
+            <div id="map"></div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>📋 New Service Requests</h2>
+                {% if pending_bookings %}
+                    {% for booking in pending_bookings %}
+                    <div class="booking-item">
+                        <h3>Booking #{{ booking.id }} <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span></h3>
+                        <p><strong>🔎 Issue:</strong> {{ booking.issue_description }}</p>
+                        <p><strong>📍 Customer Location:</strong> {{ booking.user_lat }}, {{ booking.user_lng }}</p>
+                        <p><strong>🕐 Requested:</strong> {{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <div style="margin-top: 15px;">
+                            <a href="/mechanic/accept/{{ booking.id }}" class="btn-accept">✓ Accept</a>
+                            <a href="/mechanic/reject/{{ booking.id }}" class="btn-reject">✗ Reject</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <p>🎉 No pending requests at the moment</p>
+                    <p style="margin-top: 10px; font-size: 14px;">New service requests will appear here</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="card">
+                <h2>🔧 My Active Jobs</h2>
+                {% if my_bookings %}
+                    {% for booking in my_bookings %}
+                    <div class="booking-item">
+                        <h3>Booking #{{ booking.id }} <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span></h3>
+                        <p><strong>🔎 Issue:</strong> {{ booking.issue_description }}</p>
+                        <p><strong>📍 Customer Location:</strong> {{ booking.user_lat }}, {{ booking.user_lng }}</p>
+                        <p><strong>🕐 Accepted:</strong> {{ booking.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <p>📭 No active jobs</p>
+                    <p style="margin-top: 10px; font-size: 14px;">Accept a request to start working</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        let map, myMarker;
+        
+        function initMap() {
+            const lat = {{ mechanic.latitude or 0 }};
+            const lng = {{ mechanic.longitude or 0 }};
+            
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: lat, lng: lng },
+                zoom: 14,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }
+                ]
+            });
+            
+            if (lat && lng) {
+                myMarker = new google.maps.Marker({
+                    position: { lat: lat, lng: lng },
+                    map: map,
+                    title: 'Your Workshop',
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                    animation: google.maps.Animation.DROP
+                });
+            }
+        }
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    document.getElementById('lat').value = lat;
+                    document.getElementById('lng').value = lng;
+                    
+                    if (map) {
+                        map.setCenter({ lat: lat, lng: lng });
+                        
+                        if (myMarker) {
+                            myMarker.setPosition({ lat: lat, lng: lng });
+                        } else {
+                            myMarker = new google.maps.Marker({
+                                position: { lat: lat, lng: lng },
+                                map: map,
+                                title: 'Your Workshop',
+                                icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png'
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        
+        function updateLocation() {
+            const lat = document.getElementById('lat').value;
+            const lng = document.getElementById('lng').value;
+            
+            if (!lat || !lng) {
+                alert('Please enter or get your location first');
+                return;
+            }
+            
+            fetch('/mechanic/update-location', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude: lat, longitude: lng })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Location updated successfully!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                alert('Error updating location');
+            });
+        }
+    </script>
+</body>
+</html>

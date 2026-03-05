@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Help - Onroad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=1920') center/cover no-repeat fixed;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .user-info {
+            color: #ccc;
+        }
+        
+        .user-info a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 40, 0.95));
+            padding: 35px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 25px 25px 0 0;
+        }
+        
+        h2 {
+            color: #00d4ff;
+            margin-bottom: 25px;
+            font-size: 26px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-weight: 500;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        #map {
+            height: 450px;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .mechanics-list {
+            margin-top: 20px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        
+        .mechanics-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .mechanics-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .mechanics-list::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 10px;
+        }
+        
+        .mechanic-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .mechanic-card:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+            border-color: #00d4ff;
+            transform: translateX(5px);
+        }
+        
+        .mechanic-card h4 {
+            color: #00ff88;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+        
+        .mechanic-card p {
+            color: #aaa;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+        
+        .icon {
+            margin-right: 5px;
+        }
+        
+        .hero-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hero-text p {
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🚗 Onroad</div>
+        <div class="user-info">
+            {{ session.get('user_name', 'User') }} | <a href="/logout">Logout</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="form-section">
+            <div class="hero-text">
+                <h2>🔧 Request Breakdown Assistance</h2>
+                <p>Share your location and describe your vehicle issue</p>
+            </div>
+            <form method="POST" id="bookingForm">
+                <div class="form-group">
+                    <label>📍 Your Location (Latitude)</label>
+                    <input type="number" step="any" name="latitude" id="lat" required placeholder="Latitude will be auto-filled">
+                </div>
+                <div class="form-group">
+                    <label>📍 Your Location (Longitude)</label>
+                    <input type="number" step="any" name="longitude" id="lng" required placeholder="Longitude will be auto-filled">
+                </div>
+                <button type="button" class="btn" onclick="getLocation()">📍 Get My Location</button>
+                
+                <div class="form-group" style="margin-top: 25px;">
+                    <label>🔎 Describe the Issue</label>
+                    <textarea name="issue_description" required placeholder="e.g., Car won't start, flat tire, engine making noise..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Submit Request</button>
+            </form>
+            
+            <h3 style="margin-top: 35px; color: #00ff88; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                🔧 Nearby Mechanics
+            </h3>
+            <div class="mechanics-list" id="mechanicsList">
+                <p style="color: #666; text-align: center; padding: 20px;">Get your location to see nearby mechanics</p>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>🗺️ Your Location on Map</h2>
+            <div id="map"></div>
+        </div>
+    </div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        let map, userMarker, mechanicMarkers = [];
+        
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 13,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }
+                ]
+            });
+        }
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    document.getElementById('lat').value = lat;
+                    document.getElementById('lng').value = lng;
+                    
+                    if (map) {
+                        map.setCenter({ lat: lat, lng: lng });
+                        
+                        if (userMarker) userMarker.setMap(null);
+                        userMarker = new google.maps.Marker({
+                            position: { lat: lat, lng: lng },
+                            map: map,
+                            title: 'Your Location',
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                            animation: google.maps.Animation.DROP
+                        });
+                    }
+                    
+                    loadNearbyMechanics(lat, lng);
+                }, function() {
+                    alert("Unable to get location. Please enable location services.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+        
+        function loadNearbyMechanics(lat, lng) {
+            fetch(`/api/nearby-mechanics?lat=${lat}&lng=${lng}`)
+                .then(response => response.json())
+                .then(mechanics => {
+                    const list = document.getElementById('mechanicsList');
+                    list.innerHTML = '';
+                    
+                    mechanicMarkers.forEach(m => m.setMap(null));
+                    mechanicMarkers = [];
+                    
+                    if (mechanics.length === 0) {
+                        list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No mechanics found nearby</p>';
+                        return;
+                    }
+                    
+                    mechanics.forEach(m => {
+                        const card = document.createElement('div');
+                        card.className = 'mechanic-card';
+                        card.innerHTML = `
+                            <h4>🔧 ${m.name}</h4>
+                            <p><span class="icon">📞</span> ${m.phone}</p>
+                            <p><span class="icon">⚙️</span> ${m.specialty}</p>
+                            <p><span class="icon">📍</span> ${m.distance} km away</p>
+                        `;
+                        list.appendChild(card);
+                        
+                        const marker = new google.maps.Marker({
+                            position: { lat: m.latitude, lng: m.longitude },
+                            map: map,
+                            title: m.name,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                        });
+                        mechanicMarkers.push(marker);
+                    });
+                });
+        }
+        
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            const lat = document.getElementById('lat').value;
+            const lng = document.getElementById('lng').value;
+            if (!lat || !lng) {
+                e.preventDefault();
+                alert('Please get your location first');
+            }
+        });
+    </script>
+</body>
+</html>
